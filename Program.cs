@@ -6,18 +6,14 @@ using Microsoft.CodeAnalysis.Scripting;
 
 namespace roslyingscriptingdemo
 {
-    public class GlobalData
+    public class GlobalData(IReadOnlyDictionary<string, object> data)
     {
-        public GlobalData(IReadOnlyDictionary<string, object> data)
-        {
-            Data = data;
-        }
-        public IReadOnlyDictionary<string, object> Data { get; }
+        public IReadOnlyDictionary<string, object> Data { get; } = data;
     }
 
-    class Program
+    public static class Program
     {
-        const string Code = @"return new {
+        private const string Code = @"return new {
     Name = Data.Value(""Name""),
     Price = Data.Value(""Price""),
     Code = Data.Value(""ProductCode""),
@@ -28,7 +24,7 @@ static object Value(this IReadOnlyDictionary<string, object> dictionary, string 
 {
     return (dictionary.ContainsKey(key)) ? dictionary[key] : null;
 }";
-        static async Task Main(string[] args)
+        public static async Task Main()
         {
             // todo: Code would come from some external source.
             var data = await GenerateAsync(Code, new GlobalData(new Dictionary<string, object>
@@ -41,7 +37,7 @@ static object Value(this IReadOnlyDictionary<string, object> dictionary, string 
             Console.WriteLine(JsonUtils.Stringify(data));
         }
 
-        public static async Task<object> GenerateAsync(string codeAsString, GlobalData data)
+        private static async Task<object> GenerateAsync(string codeAsString, GlobalData data)
         {
             var options = ScriptOptions.Default
                 .AddReferences("System", "System.Collections.Generic")
