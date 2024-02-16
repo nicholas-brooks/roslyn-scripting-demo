@@ -3,9 +3,9 @@ using Newtonsoft.Json.Serialization;
 
 namespace roslyingscriptingdemo
 {
-    static class JsonUtils
+    internal static class JsonUtils
     {
-        private static JsonSerializerSettings JsonSettings => new JsonSerializerSettings()
+        private static JsonSerializerSettings JsonSettings => new()
         {
             ContractResolver = new DefaultContractResolver() { NamingStrategy = new SnakeCaseNamingStrategy() },
         };
